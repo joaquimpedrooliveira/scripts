@@ -5,14 +5,14 @@ set -e
 # Script JBOSS 
 
 #eth0
-ETH0=`LC_ALL= LANG= /sbin/ifconfig eth0 | grep 'inet addr:' | sed 's/.*inet addr://' | cut -d ' ' -f 1`
-JAVA_OPTS="$JAVA_OPTS -Xss128k -XX:+UseParallelGC -XX:MaxPermSize=512m"
+#ETH0=`LC_ALL= LANG= /sbin/ifconfig eth0 | grep 'inet addr:' | sed 's/.*inet addr://' | cut -d ' ' -f 1`
+JAVA_OPTS="$JAVA_OPTS -server -d64 -Xss256k -XX:+UseParallelGC -XX:MaxPermSize=256m"
 export JAVA_OPTS
 
 ECHO=/bin/echo
 TEST=/usr/bin/test
-JBOSS_START_SCRIPT=/rede/jboss-5.1.0.GA/bin/run.sh
-JBOSS_STOP_SCRIPT=/rede/jboss-5.1.0.GA/bin/shutdown.sh
+JBOSS_START_SCRIPT=/opt/programas/jboss-5.1.0.GA/bin/run.sh
+JBOSS_STOP_SCRIPT=/opt/programas/jboss-5.1.0.GA/bin/shutdown.sh
 
 $TEST -x $JBOSS_START_SCRIPT || exit 0
 $TEST -x $JBOSS_STOP_SCRIPT || exit 0
@@ -26,7 +26,8 @@ start() {
         INSTANCIA=$1
       fi
       $ECHO -n "Iniciando o JBoss instância $INSTANCIA"
-      $JBOSS_START_SCRIPT -c $INSTANCIA -b $ETH0 -Dsun.rmi.dgc.server.gcInterval=3600000 -Dcom.sun.management.jmxremote -Dfile.encoding=ISO-8859-1 -Duser.language=pt -Duser.country=BR -Dorg.apache.catalina.STRICT_SERVLET_COMPLIANCE=false -Duser.timezone=Etc/GMT+3 -Djava.awt.headless=true  -Djboss.service.binding.set=ports-01 > /dev/null 2> /dev/null &
+      # -Djboss.service.binding.set=ports-01
+      $JBOSS_START_SCRIPT -c $INSTANCIA -b 0.0.0.0 -Dsun.rmi.dgc.server.gcInterval=3600000 -Dcom.sun.management.jmxremote -Dfile.encoding=ISO-8859-1 -Duser.language=pt -Duser.country=BR -Dorg.apache.catalina.STRICT_SERVLET_COMPLIANCE=false -Duser.timezone=Etc/GMT+3 -Djava.awt.headless=true > /dev/null 2> /dev/null &
       $ECHO "."
 }
 
