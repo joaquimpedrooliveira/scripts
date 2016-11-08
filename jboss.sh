@@ -6,8 +6,15 @@ set -e
 
 #eth0
 #ETH0=`LC_ALL= LANG= /sbin/ifconfig eth0 | grep 'inet addr:' | sed 's/.*inet addr://' | cut -d ' ' -f 1`
-JAVA_OPTS="$JAVA_OPTS -server -d64 -Xss256k -XX:+UseParallelGC -XX:MaxPermSize=256m"
-export JAVA_OPTS
+
+#Se JAVA_HOME não tiver configurado, usa a variável definida no script
+if [ "x$JAVA_HOME" = "x" ]; then
+    export JAVA_HOME=/opt/programas/jdk/jdk1.6.0_45
+fi
+#Se JAVA_OPTS não tiver configurado, usa a variável definida no script
+if [ "x$JAVA_OPTS" = "x" ]; then
+    export JAVA_OPTS="$JAVA_OPTS -server -d64 -Xss256k -XX:+UseParallelGC -XX:MaxPermSize=256m"
+fi
 
 ECHO=/bin/echo
 TEST=/usr/bin/test
